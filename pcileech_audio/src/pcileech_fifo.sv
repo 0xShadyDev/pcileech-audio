@@ -33,8 +33,6 @@ module pcileech_fifo #(
     IfPCIeFifoCore.mp_fifo  dpcie,
     IfShadow2Fifo.fifo      dshadow2fifo
     );
-
-    reg [7:0] tlp_magic;
       
     // ----------------------------------------------------
     // TickCount64
@@ -260,7 +258,6 @@ module pcileech_fifo #(
     
     task pcileech_fifo_ctl_initialvalues;               // task is non automatic
         begin
-            tlp_magic      <= 14;
             _cmd_tx_wr_en  <= 1'b0;
                
             // MAGIC
@@ -382,10 +379,6 @@ module pcileech_fifo #(
                         _cmd_tx_wr_en       <= 1'b1;
                         _cmd_tx_din[31:16]  <= in_cmd_address_byte;
                         _cmd_tx_din[15:0]   <= {in_cmd_data_in[7:0], in_cmd_data_in[15:8]};
-                        if ({in_cmd_address_byte[14:0], 1'b0} == 15'h00A0) //
-                            begin
-                                tlp_magic <= 0;
-                            end
                     end
                 // SEND COUNT ACTION
                 else if ( ~_cmd_tx_almost_full & ~in_cmd_write & _cmd_send_count_enable )
